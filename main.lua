@@ -1,5 +1,5 @@
 -- ====================================================================
--- SCRIPT: CRISTOPHER YT - DUELL PVP (INTERFAZ LIMPIA)
+--SCRIPT: CRISTOPHER YT - DUELL PVP (INTERFAZ LIMPIA)
 -- ====================================================================
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
