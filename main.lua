@@ -1,5 +1,5 @@
 -- ====================================================================
--- SCRIPT: CRISTOPHER YT - DUELL PVP (SIN CAMBIOS DE FPS)
+-- SCRIPT: CRISTOPHER YT - DUELL PVP (INTERFAZ LIMPIA)
 -- ====================================================================
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -10,11 +10,6 @@ local Camera = workspace.CurrentCamera
 -- INTERFAZ
 local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
 _G.ScriptActivo = false
-
-local TopLabel = Instance.new("TextLabel", ScreenGui)
-TopLabel.Size = UDim2.new(0, 300, 0, 70); TopLabel.Position = UDim2.new(0.5, -150, 0, 10)
-TopLabel.BackgroundTransparency = 1; TopLabel.TextColor3 = Color3.fromRGB(255, 30, 30)
-TopLabel.Font = Enum.Font.SourceSansBold; TopLabel.TextSize = 26; TopLabel.Text = "Enemies: 0\nKills: 0"
 
 local function makeDraggable(frame)
     local dragging, dragStart, startPos
@@ -45,24 +40,20 @@ RunService.RenderStepped:Connect(function()
     ESPFolder:ClearAllChildren()
     if not LocalPlayer.Character or not LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then return end
     
-    local TotalEnemies = 0
     local ClosestTarget = nil
     local MinDist = 300
-    
-    local stats = LocalPlayer:FindFirstChild("leaderstats")
-    local kills = stats and (stats:FindFirstChild("Kills") or stats:FindFirstChild("Bajas") or stats:FindFirstChild("Streak")).Value or 0
 
     for _, p in pairs(Players:GetPlayers()) do
         if p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("Head") and p.Character.Humanoid.Health > 0 then
             local dist = (LocalPlayer.Character.HumanoidRootPart.Position - p.Character.HumanoidRootPart.Position).Magnitude
-            if dist < 150 then
-                TotalEnemies = TotalEnemies + 1
-                if _G.ScriptActivo then
-                    local hl = Instance.new("Highlight", ESPFolder)
-                    hl.Adornee = p.Character; hl.FillColor = Color3.fromRGB(180, 100, 255); hl.FillTransparency = 0.8
-                end
+            
+            -- ESP si está activo y cerca (150 studs)
+            if dist < 150 and _G.ScriptActivo then
+                local hl = Instance.new("Highlight", ESPFolder)
+                hl.Adornee = p.Character; hl.FillColor = Color3.fromRGB(180, 100, 255); hl.FillTransparency = 0.8
             end
             
+            -- Aimbot si está activo
             if _G.ScriptActivo then
                 local screenPos, onScreen = Camera:WorldToViewportPoint(p.Character.Head.Position)
                 local screenDist = (Vector2.new(screenPos.X, screenPos.Y) - Vector2.new(Camera.ViewportSize.X/2, Camera.ViewportSize.Y/2)).Magnitude
@@ -74,8 +65,8 @@ RunService.RenderStepped:Connect(function()
         end
     end
 
-    TopLabel.Text = "Enemies: " .. tostring(TotalEnemies) .. "\nKills: " .. tostring(kills)
     if _G.ScriptActivo and ClosestTarget then
         Camera.CFrame = CFrame.new(Camera.CFrame.Position, ClosestTarget.Position)
     end
 end)
+
